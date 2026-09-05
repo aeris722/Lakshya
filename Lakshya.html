@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0908">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Lakshya">
+<title>Lakshya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0A0908;
+  --s1:#151310;--s2:#1C1916;--s3:#26221D;
+  --line:#252119;--line2:#37322A;
+  --ink:#F4F1EA;--mut:#A59E90;--faint:#6E6759;
+  --acc:#D97757;--acc-soft:rgba(217,119,87,.12);
+  --neg:#C97C6D;--neg-soft:rgba(201,124,109,.08);
+  --ivory:#F0EDE5;--ivory-ink:#1B1915;
+  --pos:#8FC7A2;
+  --r1:#2B211A;--r2:#55382B;--r3:#A05C41;--r4:#D97757;
+  --serif:'Source Serif 4',Georgia,serif;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;touch-action:manipulation}
+body.lock{overflow:hidden}
+button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer;font-size:inherit;transition:transform .12s ease,opacity .15s ease,background .15s ease,color .15s ease}
+button:active{transform:scale(.975)}
+button:disabled{opacity:.45;pointer-events:none}
+input,textarea{font-family:inherit}
+img{display:block}
+#boot{position:fixed;inset:0;background:var(--bg);z-index:99;display:grid;place-items:center;text-align:center;transition:opacity .3s}
+#boot .bl{font:600 26px var(--serif);letter-spacing:-.02em;margin-bottom:18px}
+#boot .bs{width:22px;height:22px;border:2.5px solid var(--s3);border-top-color:var(--acc);border-radius:50%;margin:0 auto;animation:sp 1s linear infinite}
+#boot .bm{margin-top:18px;font-size:12px;color:var(--faint)}
+@keyframes sp{to{transform:rotate(360deg)}}
+#root{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;background:var(--bg);padding-bottom:calc(102px + env(safe-area-inset-bottom))}
+
+.hd{padding:30px 24px 0}
+.hd .ovl{font-size:10.5px;font-weight:650;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.hd h1{font:600 30px var(--serif);letter-spacing:-.02em;margin-top:5px}
+.hd-row{display:flex;justify-content:space-between;align-items:flex-start}
+.stk{display:flex;align-items:center;gap:7px;padding:9px 15px;background:var(--s1);border:1px solid var(--line2);border-radius:999px;font-weight:600;font-size:14px;font-variant-numeric:tabular-nums;margin-top:6px}
+.stk.lit{color:var(--acc);border-color:rgba(217,119,87,.35);background:var(--acc-soft)}
+.stk.off{color:var(--faint)}
+.av{width:40px;height:40px;border-radius:50%;overflow:hidden;background:var(--s2);border:1px solid var(--line2);display:grid;place-items:center;color:var(--acc);font:600 15px var(--serif);margin-top:6px}
+.av img{width:100%;height:100%;object-fit:cover}
+
+.wrap{padding:0 24px 32px}
+.view{animation:rise .28s ease}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+
+.lgd{background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:26px}
+.lgd-row{display:flex;align-items:center;gap:15px}
+.lgd-med{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:24px;flex:none}
+.lgd-t{flex:1;min-width:0}
+.lgd-t b{display:block;font:600 20px var(--serif);letter-spacing:-.015em}
+.lgd-t span{display:block;font-size:11.5px;color:var(--mut);margin-top:4px;font-variant-numeric:tabular-nums}
+.lgd-go{text-align:right;line-height:1.35}
+.lgd-go b{display:block;font:600 17px var(--serif);font-variant-numeric:tabular-nums}
+.lgd-go span{font-size:11px;color:var(--mut)}
+.lgd-bar{height:6px;border-radius:3px;background:var(--s3);margin-top:18px;overflow:hidden}
+.lgd-bar i{display:block;height:100%;border-radius:3px;transition:width .55s cubic-bezier(.3,.9,.3,1)}
+
+.prg{height:5px;border-radius:3px;background:var(--s3);margin:28px 0 10px;overflow:hidden}
+.prg i{display:block;height:100%;background:var(--acc);border-radius:3px;width:0;transition:width .45s cubic-bezier(.3,.9,.3,1)}
+.sum{font-size:12.5px;color:var(--mut);margin-bottom:16px;font-variant-numeric:tabular-nums}
+.sum b{color:var(--ink);font-weight:600}
+
+.card{background:var(--s1);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.tk{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid var(--line);transition:background .15s}
+.tk:last-child{border-bottom:0}
+.tk:active{background:var(--s2)}
+.tk .em{font-size:20px;width:28px;text-align:center;flex:none;transition:opacity .25s}
+.tk.dn .em{opacity:.45}
+.tkm{flex:1;min-width:0}
+.tkn{font-size:15px;font-weight:500;letter-spacing:-.005em}
+.tkm2{font-size:11.5px;color:var(--mut);margin-top:3px;font-variant-numeric:tabular-nums}
+.xpl{font-size:12px;font-weight:650;color:var(--pos);font-variant-numeric:tabular-nums;flex:none}
+.xpl.zero{color:var(--faint);font-weight:500}
+.tk.dn .tkn{color:var(--faint);text-decoration:line-through;text-decoration-color:var(--line2)}
+.tk.dn .tkm2{color:var(--faint)}
+.cb{width:25px;height:25px;border:1.5px solid var(--line2);border-radius:50%;flex:none;display:grid;place-items:center;color:transparent;transition:background .18s,border-color .18s,color .18s}
+.cb svg{opacity:0;transform:scale(.4);transition:opacity .16s,transform .18s cubic-bezier(.34,1.56,.64,1)}
+.tk.dn .cb{background:var(--acc);border-color:var(--acc);color:#1C120C}
+.tk.dn .cb svg{opacity:1;transform:scale(1)}
+
+.hero{display:flex;align-items:baseline;gap:12px;padding:26px 4px 14px}
+.hero .n{font:600 60px var(--serif);letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--acc);line-height:1}
+.hero .n.off{color:var(--faint)}
+.hero .l{font-size:13.5px;color:var(--mut);font-weight:500}
+.mcard{background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:19px 17px}
+.mhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.mhd b{font:600 17px var(--serif);letter-spacing:-.01em}
+.mnav{display:flex;gap:8px}
+.mnav button{width:34px;height:34px;border-radius:999px;border:1px solid var(--line2);background:var(--s2);color:var(--mut);font-size:16px;line-height:1;display:grid;place-items:center}
+.mnav button:active{color:var(--acc);transform:none;background:var(--s3)}
+.mnav button:disabled{opacity:.3}
+.wds{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:7px}
+.wds span{text-align:center;font-size:10px;color:var(--faint);font-weight:650;letter-spacing:.05em}
+.mg{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.mc{aspect-ratio:1/1;border-radius:10px;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;display:grid;place-items:center;background:var(--s3);color:var(--ink)}
+.mc:active{transform:scale(.9)}
+.mc.l1{background:var(--r1);color:#D9A87C}
+.mc.l2{background:var(--r2);color:#EDC9B4}
+.mc.l3{background:var(--r3);color:#F9E4D7}
+.mc.l4{background:var(--r4);color:#1C120C;font-weight:700}
+.mc.fut{color:var(--faint);background:transparent;border:1px dashed var(--line2)}
+.mc.tdy{box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--acc)}
+.mlg{display:flex;gap:7px;justify-content:flex-end;align-items:center;margin-top:16px}
+.mlg i{width:9px;height:9px;border-radius:3px;display:inline-block}
+
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:flex;background:rgba(14,12,10,.86);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));z-index:40}
+nav button{flex:1;display:flex;flex-direction:column;gap:4px;align-items:center;color:var(--faint);font-size:10.5px;font-weight:600;padding:5px 0;border-radius:12px}
+nav button:active{transform:none;background:var(--s1)}
+nav button.on{color:var(--acc)}
+
+#bd{position:fixed;inset:0;background:rgba(5,4,3,.62);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:.28s;z-index:50}
+#bd.on{opacity:1;pointer-events:auto}
+#sheet{position:fixed;bottom:0;left:50%;transform:translate(-50%,105%);width:100%;max-width:480px;background:var(--s2);border:1px solid var(--line2);border-bottom:0;border-radius:24px 24px 0 0;z-index:51;transition:transform .34s cubic-bezier(.32,.72,.28,1);max-height:88dvh;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
+#sheet.on{transform:translate(-50%,0)}
+.grab{width:36px;height:4px;border-radius:2px;background:var(--line2);margin:12px auto 2px;flex:none}
+.sb{padding:20px 26px 34px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.sht{font:600 21px var(--serif);letter-spacing:-.015em}
+.shs{font-size:12px;color:var(--mut);margin-top:5px}
+.shx{font-size:13.5px;color:var(--mut);margin:14px 0 2px;font-variant-numeric:tabular-nums}
+.fl{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:22px 0 12px}
+.mnum{font:600 48px var(--serif);text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1.1}
+.mnum small{font-size:15px;color:var(--faint);font-weight:400}
+input[type=range]{width:100%;accent-color:var(--acc);margin:12px 0 6px;height:30px}
+.qc{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.qc button{font-size:12.5px;font-weight:600;color:var(--mut);border:1px solid var(--line2);background:var(--s1);border-radius:999px;padding:8px 16px}
+.qc button.on{border-color:var(--acc);color:var(--acc);background:var(--acc-soft)}
+.mact{display:flex;gap:10px;margin-top:18px}
+.btn{flex:1;border-radius:999px;padding:14px;font-weight:600;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:scale(.98)}
+.bp{background:var(--ivory);color:var(--ivory-ink)}
+.bp:active{opacity:.85}
+.gh{border:1px solid var(--line2);color:var(--ink);background:var(--s1)}
+.bd2{border:1px solid rgba(201,124,109,.3);color:var(--neg);background:var(--neg-soft)}
+.row{display:flex;align-items:center;gap:11px;padding:10px 0}
+.rck{width:19px;height:19px;border-radius:50%;background:var(--acc);color:#1C120C;display:grid;place-items:center;flex:none}
+.rt{flex:1;font-size:13.5px;color:var(--mut)}
+.who{display:flex;align-items:center;gap:15px;margin:4px 0 2px}
+.who img{width:56px;height:56px;border-radius:50%;border:1px solid var(--line2);object-fit:cover}
+.who .ini{width:56px;height:56px;border-radius:50%;background:var(--acc);color:#1C120C;display:grid;place-items:center;font:600 21px var(--serif)}
+.note{font-size:11.5px;color:var(--faint);line-height:1.65;margin-top:6px}
+.btext{width:100%;height:150px;background:var(--s1);border:1px solid var(--line2);border-radius:12px;color:var(--mut);font:500 10.5px/1.5 ui-monospace,Menlo,monospace;padding:10px;resize:none;outline:0;margin-top:14px}
+.btext:focus{border-color:var(--acc)}
+
+#au{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;padding:36px 32px;animation:rise .4s ease}
+.dot{width:56px;height:56px;border-radius:16px;background:var(--s1);border:1px solid var(--line2);display:grid;place-items:center;margin-bottom:26px;color:var(--acc)}
+#au h1{font:600 38px var(--serif);letter-spacing:-.025em}
+#au p{font-size:15px;color:var(--mut);margin:10px 0 34px}
+.gbtn-wrap{display:flex;justify-content:center;min-height:52px;margin-bottom:10px}
+.gl{display:flex;align-items:center;justify-content:center;gap:11px;background:var(--ivory);color:var(--ivory-ink);border-radius:999px;height:54px;font-weight:600;font-size:15px;width:100%}
+.gl:active{opacity:.85;transform:scale(.985)}
+.inp{width:100%;background:var(--s1);border:1px solid var(--line2);border-radius:14px;padding:14px 16px;color:var(--ink);font-size:16px;outline:0;margin-bottom:10px}
+.inp:focus{border-color:var(--acc)}
+.gb{background:var(--acc);color:#1C120C;border-radius:999px;padding:15px;font-weight:600;font-size:15px;width:100%}
+.alt{font-size:12px;color:var(--faint);text-align:center;margin-top:18px}
+.alt button{color:var(--mut);text-decoration:underline;font-size:12px}
+.spin{width:20px;height:20px;border:2.5px solid var(--s3);border-top-color:var(--acc);border-radius:50%;animation:ro 1s linear infinite;margin:0 auto}
+@keyframes ro{to{transform:rotate(360deg)}}
+
+#tst{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:70;display:flex;flex-direction:column;gap:8px;width:min(92vw,430px);pointer-events:none}
+.ts{background:var(--s2);border:1px solid var(--line2);color:var(--ink);padding:12px 16px;border-radius:999px;font-size:13px;font-weight:500;display:flex;gap:9px;align-items:center;box-shadow:0 12px 32px rgba(0,0,0,.55);animation:ti .3s cubic-bezier(.34,1.3,.64,1)}
+.ts::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--acc);flex:none}
+.ts.out{opacity:0;transform:translateY(-8px);transition:.3s}
+@keyframes ti{from{opacity:0;transform:translateY(-10px) scale(.96)}}
+</style>
+</head>
+<body>
+<div id="boot">
+  <div>
+    <div class="bl">Lakshya</div>
+    <div class="bs"></div>
+    <div class="bm" id="bootmsg">Loading…</div>
+  </div>
+</div>
+<div id="root"></div>
+<div id="bd"></div>
+<div id="sheet"><div class="grab"></div><div class="sb" id="sbody"></div></div>
+<div id="tst"></div>
+
+<script>
+window.__loadFail=function(n){var m=document.getElementById('bootmsg');if(m)m.innerHTML="Couldn't load "+n+". Connect and reload."};
+setTimeout(function(){var m=document.getElementById('bootmsg');
+  if(m&&window.__ready!==true&&!m.innerHTML.match(/Couldn't/))m.innerHTML='Still loading…';},9000);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js" onerror="__loadFail('React')"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js" onerror="__loadFail('ReactDOM')"></script>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7/babel.min.js" onerror="__loadFail('the compiler')"></script>
+
+<script type="text/babel" data-presets="react">
+const {useState,useEffect,useRef}=React;
+
+/* Paste your Google OAuth Client ID here to enable real Gmail sign-in.
+   Empty = demo sign-in. All backup features work either way. */
+const GOOGLE_CLIENT_ID='';
+
+const WD=[
+  {id:'wake1',  e:'⏰', n:'Wake up',          m:'6:20 AM',             xp:50},
+  {id:'workout',e:'💪', n:'Workout',          m:'10 min',              xp:60},
+  {id:'meditate',e:'🧘',n:'Meditate',         m:'15 min',              xp:70},
+  {id:'journal',e:'📓', n:'Journal',          m:'',                    xp:50},
+  {id:'medicine',e:'💊',n:'Medicine',         m:'',                    xp:0},
+  {id:'wake2',  e:'🌆', n:'Wake up',          m:'3:20 PM',             xp:60},
+  {id:'study1', e:'📚', n:'Study session',    m:'3:40 – 6:00 PM',      meter:1},
+  {id:'relax',  e:'🛋️', n:'Relax',            m:'',                    xp:0},
+  {id:'study2', e:'🌙', n:'Study session',    m:'6:30 – 9:30 PM',      meter:1},
+  {id:'parents',e:'🏠', n:'Talk with parents',m:'',                    xp:0},
+  {id:'study3', e:'🌌', n:'Study session',    m:'10:00 PM – 12:00 AM', meter:1.5},
+  {id:'slip',   e:'🧾', n:'Slip',             m:'end of day',          xp:70},
+];
+const WE=[
+  {id:'wake1',  e:'⏰', n:'Wake up',          m:'6:20 AM',             xp:50},
+  {id:'workout',e:'💪', n:'Workout',          m:'10 min',              xp:60},
+  {id:'meditate',e:'🧘',n:'Meditate',         m:'15 min',              xp:70},
+  {id:'journal',e:'📓', n:'Journal',          m:'',                    xp:50},
+  {id:'medicine',e:'💊',n:'Medicine',         m:'',                    xp:0},
+  {id:'long',   e:'🌞', n:'Study session',    m:'8:00 AM – 1:00 PM',   meter:3},
+  {id:'wake2',  e:'🌆', n:'Wake up',          m:'3:20 PM',             xp:60},
+  {id:'study1', e:'📚', n:'Study session',    m:'3:40 – 6:00 PM',      meter:1},
+  {id:'relax',  e:'🛋️', n:'Relax',            m:'',                    xp:0},
+  {id:'study2', e:'🌙', n:'Study session',    m:'6:30 – 9:30 PM',      meter:1},
+  {id:'parents',e:'🏠', n:'Talk with parents',m:'',                    xp:0},
+  {id:'study3', e:'🌌', n:'Study session',    m:'10:00 PM – 12:00 AM', meter:1.5},
+  {id:'slip',   e:'🧾', n:'Slip',             m:'end of day',          xp:70},
+];
+const tasksFor=ds=>{const d=pds(ds).getDay();return (d===0||d===6)?WE:WD};
+
+const dayMaxOf=list=>list.reduce((s,t)=>s+(t.meter?Math.round(100*t.meter):t.xp),0);
+const MAX_WD=dayMaxOf(WD);
+const MAX_WE=dayMaxOf(WE);
+const WEEK_MAX=5*MAX_WD+2*MAX_WE;
+const DAY_CUT=0.7, DAY_PEN=50;
+
+const LEAGUES=[
+  {n:'Bronze', min:Math.round(WEEK_MAX*0.70), e:'🥉', c:'#D9A87C'},
+  {n:'Silver', min:Math.round(WEEK_MAX*0.80), e:'🥈', c:'#C6CBD4'},
+  {n:'Gold',   min:Math.round(WEEK_MAX*0.90), e:'🥇', c:'#EBCB84'},
+  {n:'Diamond',min:WEEK_MAX,                  e:'💎', c:'#A9CFE0'},
+];
+
+const pad=n=>String(n).padStart(2,'0');
+const dstr=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const todayStr=()=>dstr(new Date());
+const pds=s=>{const p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2])};
+const mondayOf=d=>{const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x};
+const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const fmt=n=>Number(n||0).toLocaleString('en-IN');
+const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+
+const _mem={};
+const LS={
+  get(k){try{return localStorage.getItem(k)}catch(e){return (k in _mem)?_mem[k]:null}},
+  set(k,v){try{localStorage.setItem(k,v)}catch(e){_mem[k]=v}}
+};
+const KEY='lakshya.min.v1';
+const load=()=>{try{const r=LS.get(KEY);if(r){const s=JSON.parse(r);if(s&&typeof s==='object')return{user:s.user||null,log:(s.log&&typeof s.log==='object')?s.log:{},meta:(s.meta&&typeof s.meta==='object')?s.meta:{}}}}catch(e){}return{user:null,log:{},meta:{}}};
+
+const entries=(log,ds)=>log[ds]||{};
+const dayCount=(log,ds)=>tasksFor(ds).reduce((n,t)=>{const v=entries(log,ds)[t.id];return n+((v===undefined||v===false)?0:1)},0);
+const taskXp=(t,v)=>(v===undefined||v===false||v===null)?0:(t.meter?Math.round((typeof v==='number'?v:100)*t.meter):t.xp);
+const dayXp=(log,ds)=>tasksFor(ds).reduce((s,t)=>s+taskXp(t,entries(log,ds)[t.id]),0);
+const allDone=(log,ds)=>dayCount(log,ds)===tasksFor(ds).length;
+const doneTasks=(log,ds)=>tasksFor(ds).filter(t=>{const v=entries(log,ds)[t.id];return !(v===undefined||v===false)});
+
+function calcStreak(log){
+  let s=0,d=new Date();
+  if(!allDone(log,dstr(d)))d.setDate(d.getDate()-1);
+  while(allDone(log,dstr(d))){s++;d.setDate(d.getDate()-1)}
+  return s;
+}
+function calcWeekly(log,start){
+  const mon=mondayOf(new Date()),td=todayStr();
+  let total=0,low=0,slipMiss=0;
+  for(let d=new Date(mon);dstr(d)<=td;d.setDate(d.getDate()+1)){
+    const ds=dstr(d),earned=dayXp(log,ds);
+    if(ds===td||(start&&ds<start)){total+=earned;continue}
+    let v=earned;
+    if(earned<Math.round(dayMaxOf(tasksFor(ds))*DAY_CUT)){v=-DAY_PEN;low++}
+    if(!entries(log,ds).slip){v-=DAY_PEN;slipMiss++}
+    total+=v;
+  }
+  return{total,low,slipMiss};
+}
+function leagueOf(x){
+  let cur=null,next=LEAGUES[0];
+  for(const l of LEAGUES){
+    if(x>=l.min){cur=l;next=LEAGUES[LEAGUES.indexOf(l)+1]||null}
+    else break;
+  }
+  if(!cur){
+    const b=LEAGUES[0];
+    return{cur:{n:'Bronze',e:'🥉',c:b.c,soft:true,min:0},next:b};
+  }
+  return{cur,next};
+}
+function dayLevel(log,ds){
+  const list=tasksFor(ds),c=dayCount(log,ds);
+  if(!c)return 0;
+  if(c===list.length)return 4;
+  const f=c/list.length;
+  return f>=0.6?3:f>=0.3?2:1;
+}
+
+function decodeJwt(t){
+  try{
+    const p=t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+    return JSON.parse(decodeURIComponent(atob(p).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+  }catch(e){return null}
+}
+
+function toast(html){
+  const t=document.createElement('div');t.className='ts';t.innerHTML=html;
+  document.getElementById('tst').appendChild(t);
+  setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),300)},2300);
+}
+let lastErr=0;
+const reportErr=e=>{if(Date.now()-lastErr<1500)return;lastErr=Date.now();try{toast('⚠️ '+(e&&e.message?e.message:e))}catch(_){}};
+addEventListener('error',e=>reportErr(e.error||e.message));
+addEventListener('unhandledrejection',e=>reportErr(e.reason));
+
+function ensureGsi(cb){
+  if(window.google&&google.accounts&&google.accounts.id)return cb();
+  const s=document.createElement('script');
+  s.src='https://accounts.google.com/gsi/client';s.async=true;s.defer=true;
+  s.onload=cb;
+  s.onerror=()=>toast('⚠️ Could not reach Google');
+  document.head.appendChild(s);
+}
+
+const Check=()=>(<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>);
+const IcToday=({on})=>(<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={on?'currentColor':'#6E6759'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="m8.5 12 2.5 2.5 5-5"/></svg>);
+const IcStreak=({on})=>(<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={on?'currentColor':'#6E6759'} strokeWidth="2" strokeLinecap="round"><line x1="6" y1="20" x2="6" y2="13"/><line x1="12" y1="20" x2="12" y2="8"/><line x1="18" y1="20" x2="18" y2="3"/></svg>);
+
+function MonthCard({log,month,setMonth,onDay}){
+  const now=new Date();
+  const isCur=month.y===now.getFullYear()&&month.m===now.getMonth();
+  const first=new Date(month.y,month.m,1);
+  const offset=(first.getDay()+6)%7;
+  const dim=new Date(month.y,month.m+1,0).getDate();
+  const tds=todayStr();
+  const endOfToday=new Date();endOfToday.setHours(23,59,59,999);
+  const cells=[];
+  for(let i=0;i<offset;i++)cells.push(<span key={'b'+i}/>);
+  for(let d=1;d<=dim;d++){
+    const date=new Date(month.y,month.m,d),ds=dstr(date);
+    const future=date>endOfToday;
+    const lvl=dayLevel(log,ds);
+    cells.push(
+      <button key={ds} disabled={future}
+        className={'mc'+(lvl?' l'+lvl:'')+(future?' fut':'')+(ds===tds?' tdy':'')}
+        onClick={()=>!future&&onDay(ds)}>
+        {d}
+      </button>);
+  }
+  return (
+    <div className="mcard">
+      <div className="mhd">
+        <b>{MN[month.m]} {month.y}</b>
+        <div className="mnav">
+          <button onClick={()=>setMonth(m=>m.m===0?{y:m.y-1,m:11}:{y:m.y,m:m.m-1})}>‹</button>
+          <button disabled={isCur} onClick={()=>setMonth(m=>m.m===11?{y:m.y+1,m:0}:{y:m.y,m:m.m+1})}>›</button>
+        </div>
+      </div>
+      <div className="wds"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+      <div className="mg">{cells}</div>
+      <div className="mlg">
+        <i style={{background:'var(--r4)'}}/><i style={{background:'var(--r3)'}}/><i style={{background:'var(--r2)'}}/><i style={{background:'var(--r1)'}}/><i style={{background:'var(--s3)'}}/>
+      </div>
+    </div>
+  );
+}
+
+function MeterSheet({t,cur,onSave,onRemove}){
+  const [v,setV]=useState(typeof cur==='number'?cur:60);
+  return (
+    <div>
+      <div style={{display:'flex',alignItems:'center',gap:13}}>
+        <span style={{fontSize:26}}>{t.e}</span>
+        <div><div className="sht">{t.n}</div><div className="shs">{t.m}</div></div>
+      </div>
+      <div className="fl">Productivity</div>
+      <div className="mnum">{v}<small> /100</small></div>
+      <input type="range" min="1" max="100" value={v} onChange={e=>setV(+e.target.value)}/>
+      <div className="qc">{[25,50,70,85,100].map(q=>
+        <button key={q} className={v===q?'on':''} onClick={()=>setV(q)}>{q}</button>)}
+      </div>
+      <div className="mact">
+        {typeof cur==='number'&&<button className="btn bd2" onClick={onRemove}>Remove</button>}
+        <button className="btn bp" onClick={()=>onSave(v)}>Save</button>
+      </div>
+    </div>
+  );
+}
+
+function DaySheet({log,ds}){
+  const d=pds(ds),list=tasksFor(ds),c=dayCount(log,ds);
+  const done=doneTasks(log,ds);
+  return (
+    <div>
+      <div className="sht">{d.toLocaleDateString('en-GB',{weekday:'long'})}</div>
+      <div className="shs">{d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</div>
+      <div className="shx">{c}/{list.length} · {fmt(dayXp(log,ds))} XP</div>
+      {done.length>0&&<div className="fl">Done</div>}
+      {done.map(t=>{const v=entries(log,ds)[t.id],x=taskXp(t,v);
+        return(<div className="row" key={t.id}>
+          <span className="rck"><Check/></span>
+          <span className="rt">{t.e} {t.n}</span>
+          <span className={'xpl'+(x===0?' zero':'')}>+{x}</span>
+        </div>)})}
+    </div>
+  );
+}
+
+function Login({onIn}){
+  const [stage,setStage]=useState(GOOGLE_CLIENT_ID?'g':'idle');
+  const btnRef=useRef(null);
+
+  useEffect(()=>{
+    if(stage!=='g')return;
+    let ready=false;
+    const init=()=>{
+      if(ready||!window.google||!google.accounts||!google.accounts.id)return;
+      ready=true;
+      try{
+        google.accounts.id.initialize({
+          client_id:GOOGLE_CLIENT_ID,
+          callback:r=>{
+            const p=decodeJwt(r.credential);
+            if(p&&p.email){
+              onIn({name:p.name||p.email,email:p.email,pic:p.picture||'',sub:p.sub});
+            }else toast('⚠️ Google sign-in failed');
+          }
+        });
+        if(btnRef.current)google.accounts.id.renderButton(btnRef.current,{
+          theme:'filled_black',size:'large',shape:'pill',
+          text:'continue_with',logo_alignment:'center',width:300
+        });
+      }catch(e){setStage('idle')}
+    };
+    if(window.google&&google.accounts&&google.accounts.id)init();
+    else ensureGsi(init);
+  },[stage]);
+
+  const finish=(name,email)=>{setStage('busy');setTimeout(()=>onIn({name,email,pic:'',sub:''}),700)};
+
+  return (
+    <div id="au">
+      <div className="dot">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="m8.5 12 2.5 2.5 5-5"/></svg>
+      </div>
+      <h1>Lakshya</h1>
+      <p>Check in daily.</p>
+
+      {stage==='g'&&
+        <div>
+          <div className="gbtn-wrap" ref={btnRef}/>
+          <div className="alt">or continue without Google</div>
+          <div style={{textAlign:'center',marginTop:'8px'}}>
+            <button onClick={()=>setStage('pick')}>Demo sign-in</button>
+          </div>
+        </div>}
+
+      {stage==='idle'&&
+        <button className="gl" onClick={()=>setStage('pick')}>
+          <svg viewBox="0 0 24 24" width="19" height="19"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47a5.57 5.57 0 0 1-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09A11.99 11.99 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.27 14.29A7.2 7.2 0 0 1 4.89 12c0-.8.14-1.57.38-2.29V6.62H1.29a12 12 0 0 0 0 10.76l3.98-3.09z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.69 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z"/></svg>
+          Continue with Google
+        </button>}
+
+      {stage==='pick'&&
+        <div>
+          <button className="gl" style={{justifyContent:'flex-start',padding:'0 19px',height:'62px',marginBottom:'12px'}} onClick={()=>finish('Aarav Sharma','aarav.sharma@gmail.com')}>
+            <span style={{width:'34px',height:'34px',borderRadius:'50%',background:'#D97757',color:'#1C120C',display:'grid',placeItems:'center',fontWeight:600,fontSize:14}}>A</span>
+            <span style={{textAlign:'left',lineHeight:1.35}}>
+              <span style={{display:'block',fontSize:14}}>Aarav Sharma</span>
+              <span style={{display:'block',fontSize:12,color:'#6B6459',fontWeight:450}}>aarav.sharma@gmail.com</span>
+            </span>
+          </button>
+          <input id="fn" className="inp" placeholder="Your name"/>
+          <input id="fe" className="inp" placeholder="you@gmail.com" type="email"/>
+          <button className="gb" onClick={()=>{
+            const n=document.getElementById('fn').value.trim(),e=document.getElementById('fe').value.trim();
+            if(!n||!e.includes('@')){toast('⚠️ Enter name and email');return}
+            finish(n,e);
+          }}>Continue</button>
+          {!GOOGLE_CLIENT_ID&&
+            <p className="alt">Demo mode. Paste a Google Client ID into GOOGLE_CLIENT_ID to enable real sign-in.</p>}
+        </div>}
+
+      {stage==='busy'&&
+        <div style={{textAlign:'center',padding:'26px 0'}}>
+          <div className="spin"/><div style={{fontSize:13,color:'#A59E90',marginTop:14}}>Signing in…</div>
+        </div>}
+    </div>
+  );
+}
+
+function App(){
+  const [st,setSt]=useState(load);
+  const [tab,setTab]=useState('today');
+  const [sheet,setSheet]=useState(null);
+  const [,tick]=useState(0);
+  const [month,setMonth]=useState(()=>{const d=new Date();return{y:d.getFullYear(),m:d.getMonth()}});
+  const impRef=useRef(null);
+
+  useEffect(()=>{LS.set(KEY,JSON.stringify(st))},[st]);
+  useEffect(()=>{
+    const f=()=>tick(x=>x+1);
+    document.addEventListener('visibilitychange',f);
+    return()=>document.removeEventListener('visibilitychange',f);
+  },[]);
+  useEffect(()=>{if(window.__ready!==true){
+    window.__ready=true;
+    requestAnimationFrame(()=>{const b=document.getElementById('boot');if(b){b.style.opacity='0';setTimeout(()=>b.remove(),300)}});
+  }},[]);
+
+  const setEntry=(ds,id,val)=>{
+    setSt(s=>{
+      const day=Object.assign({},s.log[ds]||{});
+      if(val===null)delete day[id];else day[id]=val;
+      const log=Object.assign({},s.log);
+      if(Object.keys(day).length)log[ds]=day;else delete log[ds];
+      return Object.assign({},s,{log});
+    });
+  };
+
+  if(!st.user)return <Login onIn={u=>setSt(s=>Object.assign({},s,{
+    user:u,meta:Object.assign({},s.meta,{start:s.meta&&s.meta.start?s.meta.start:todayStr()})
+  }))}/>;
+
+  const ds=todayStr(),log=st.log;
+  const list=tasksFor(ds);
+  const dn=dayCount(log,ds);
+  const dx=dayXp(log,ds);
+  const sk=calcStreak(log);
+  const start=(st.meta&&st.meta.start)||Object.keys(log).sort()[0]||todayStr();
+  const ws=calcWeekly(log,start);
+  const lg=leagueOf(ws.total);
+  const pct=lg.next
+    ?Math.min(100,Math.max(0,(ws.total-(lg.cur.min||0))/Math.max(1,lg.next.min-(lg.cur.min||0))*100))
+    :100;
+  const mon=mondayOf(new Date());
+  const wkLabel=mon.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' – '+
+    new Date(mon.getTime()+6*864e5).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  const medalBg=lg.cur.c+'1A', medalBd=lg.cur.c+'45';
+  const dateOvl=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}).toUpperCase();
+
+  const toggleSimple=t=>{
+    const cur=entries(log,ds)[t.id];
+    if(cur)setEntry(ds,t.id,null);
+    else{setEntry(ds,t.id,true);vib(10);toast(`${t.e} ${t.n}`)}
+  };
+  const signOut=()=>{
+    try{window.google&&google.accounts&&google.accounts.id&&google.accounts.id.disableAutoSelect()}catch(e){}
+    setSheet(null);setSt(s=>Object.assign({},s,{user:null}));
+  };
+
+  const backupPayload=()=>JSON.stringify({
+    app:'lakshya',v:1,exportedAt:new Date().toISOString(),
+    data:{user:st.user,log:st.log,meta:st.meta}
+  });
+
+  /* --- EXPORT: share → download → copyable text. No silent failure. --- */
+  const downloadPayload=payload=>{
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([payload],{type:'application/json'}));
+    a.download='lakshya-backup.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+    toast('Backup file downloading — check Downloads');
+  };
+  const doExport=()=>{
+    try{
+      const payload=backupPayload();
+      try{
+        const file=new File([payload],'lakshya-backup.json',{type:'application/json'});
+        if(navigator.canShare&&navigator.canShare({files:[file]})){
+          navigator.share({files:[file],title:'Lakshya backup'}).then(
+            ()=>toast('Backup shared'),
+            err=>{
+              if(err&&err.name==='AbortError')return; /* user closed sheet */
+              try{downloadPayload(payload)}catch(e2){setSheet({kind:'btext',text:payload})}
+            }
+          );
+          return;
+        }
+      }catch(_){/* share unavailable — fall through */}
+      downloadPayload(payload);
+    }catch(e){
+      setSheet({kind:'btext',text:backupPayload()});
+    }
+  };
+  const copyBackupText=()=>{
+    const ta=document.getElementById('btextArea');
+    if(!ta)return;
+    const done=()=>toast('Copied — paste it into WhatsApp/Notes/Drive');
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(ta.value).then(done,()=>{
+        ta.select();ta.setSelectionRange(0,99999);
+        document.execCommand('copy')?done():toast('Long-press the text and copy');
+      });
+    }else{
+      ta.select();ta.setSelectionRange(0,99999);
+      document.execCommand('copy')?done():toast('Long-press the text and copy');
+    }
+  };
+
+  /* --- IMPORT: file picker or pasted text, both with confirm guard --- */
+  const parseBackupTxt=txt=>{
+    const j=JSON.parse(txt);
+    const data=(j&&j.app==='lakshya'&&j.data)?j.data:(j&&j.log?j:null);
+    if(!data||typeof data.log!=='object')throw new Error('Not a Lakshya backup');
+    return data;
+  };
+  const onImportFile=e=>{
+    const f=e.target.files&&e.target.files[0];
+    e.target.value='';
+    if(!f)return;
+    f.text().then(txt=>{
+      const data=parseBackupTxt(txt);
+      setSheet({kind:'restore',data,
+        info:Object.keys(data.log).length+' days in backup'});
+    }).catch(err=>toast('⚠️ '+(err.message||'Invalid backup file')));
+  };
+  const doPasteRestore=()=>{
+    const ta=document.getElementById('ptextArea');
+    if(!ta||!ta.value.trim()){toast('⚠️ Paste the backup text first');return}
+    try{
+      const data=parseBackupTxt(ta.value);
+      setSheet({kind:'restore',data,
+        info:Object.keys(data.log).length+' days in backup'});
+    }catch(err){toast('⚠️ '+(err.message||'Invalid backup text'))}
+  };
+  const doRestore=data=>{
+    if(!data||typeof data!=='object'||!data.log||typeof data.log!=='object'){toast('⚠️ Invalid backup');return}
+    setSt(s=>Object.assign({},s,{
+      log:data.log,
+      meta:data.meta&&typeof data.meta==='object'?data.meta:s.meta,
+      user:data.user||s.user
+    }));
+    setSheet(null);
+    toast('Backup restored');
+    setTimeout(()=>location.reload(),800);
+  };
+
+  return (
+    <div>
+      <header className="hd">
+        <div className="hd-row">
+          <div>
+            <div className="ovl">{dateOvl}</div>
+            <h1>{tab==='today'?'Today':'Streak'}</h1>
+          </div>
+          {tab==='today'
+            ?<div className={'stk'+(sk?' lit':' off')}>🔥 {sk}</div>
+            :<button className="av" onClick={()=>setSheet({kind:'account'})}>
+                {st.user.pic
+                  ?<img src={st.user.pic} alt=""/>
+                  :(st.user.name.trim()[0]||'A').toUpperCase()}
+              </button>}
+        </div>
+      </header>
+
+      <div key={tab} className="view">
+      {tab==='today'?(
+        <div className="wrap">
+          <div className="lgd">
+            <div className="lgd-row">
+              <span className="lgd-med" style={{background:medalBg,border:'1px solid '+medalBd,opacity:lg.cur.soft?.5:1}}>{lg.cur.e}</span>
+              <div className="lgd-t">
+                <b>{lg.cur.n}</b>
+                <span>{wkLabel}</span>
+              </div>
+              {lg.next
+                ?<span className="lgd-go"><b>{fmt(Math.max(0,lg.next.min-ws.total))}</b><span>to {lg.next.n}</span></span>
+                :<span className="lgd-go"><b>max</b></span>}
+            </div>
+            <div className="lgd-bar"><i style={{width:pct+'%',background:lg.cur.c}}/></div>
+          </div>
+
+          <div className="prg"><i style={{width:(dn/list.length*100)+'%'}}/></div>
+          <div className="sum"><b>{dn}</b> / {list.length} · {fmt(dx)} XP today</div>
+
+          <div className="card">
+            {list.map(t=>{
+              const v=entries(log,ds)[t.id],done=!(v===undefined||v===false),x=taskXp(t,v);
+              return(
+                <div key={t.id} className={'tk'+(done?' dn':'')}
+                  onClick={()=>t.meter?setSheet({kind:'meter',t,v}):toggleSimple(t)}>
+                  <span className="em">{t.e}</span>
+                  <div className="tkm">
+                    <div className="tkn">{t.n}</div>
+                    {t.m?<div className="tkm2">{t.m}</div>:null}
+                  </div>
+                  {done&&<span className={'xpl'+(x===0?' zero':'')}>+{x}</span>}
+                  <span className="cb"><Check/></span>
+                </div>);
+            })}
+          </div>
+        </div>
+      ):(
+        <div className="wrap">
+          <div className="hero">
+            <div className={'n'+(sk?'':' off')}>{sk}</div>
+            <div className="l">day streak</div>
+          </div>
+          <MonthCard log={log} month={month} setMonth={setMonth} onDay={ds2=>setSheet({kind:'day',ds:ds2})}/>
+        </div>
+      )}
+      </div>
+
+      <nav>
+        <button className={tab==='today'?'on':''} onClick={()=>setTab('today')}><IcToday on={tab==='today'}/>Today</button>
+        <button className={tab==='streak'?'on':''} onClick={()=>setTab('streak')}><IcStreak on={tab==='streak'}/>Streak</button>
+      </nav>
+
+      <div id="bd" className={sheet?'on':''} onClick={()=>setSheet(null)}/>
+      <div id="sheet" className={sheet?'on':''}>
+        <div className="grab"/>
+        <div className="sb">
+          {sheet&&sheet.kind==='meter'&&
+            <MeterSheet t={sheet.t} cur={sheet.v}
+              onSave={v=>{setEntry(todayStr(),sheet.t.id,v);vib(10);toast(`${sheet.t.e} ${v}/100`);setSheet(null)}}
+              onRemove={()=>{setEntry(todayStr(),sheet.t.id,null);toast('Removed');setSheet(null)}}/>}
+          {sheet&&sheet.kind==='day'&&<DaySheet log={log} ds={sheet.ds}/>}
+          {sheet&&sheet.kind==='account'&&
+            <div>
+              <div className="who">
+                {st.user.pic
+                  ?<img src={st.user.pic} alt=""/>
+                  :<span className="ini">{(st.user.name.trim()[0]||'A').toUpperCase()}</span>}
+                <div>
+                  <div className="sht">{st.user.name}</div>
+                  <div className="shs">{st.user.email}</div>
+                </div>
+              </div>
+
+              <div className="fl">Backup</div>
+              <div className="mact" style={{marginTop:0}}>
+                <button className="btn gh" onClick={doExport}>Export backup</button>
+                <button className="btn gh" onClick={()=>impRef.current&&impRef.current.click()}>Import file</button>
+              </div>
+              <div className="mact">
+                <button className="btn gh" onClick={()=>setSheet({kind:'prestore'})}>Restore from pasted text</button>
+              </div>
+              <p className="note">Export tries your phone's share sheet first, then a download, and worst case shows the backup as copyable text. Keep it in Drive, WhatsApp, or Notes. Restore replaces everything on this device.</p>
+
+              <div className="mact" style={{marginTop:22}}>
+                <button className="btn bd2" onClick={signOut}>Sign out</button>
+              </div>
+            </div>}
+          {sheet&&sheet.kind==='btext'&&
+            <div>
+              <div className="sht">Your backup</div>
+              <div className="shs">Tap Copy, then paste it into WhatsApp, Notes, or a Drive doc.</div>
+              <textarea id="btextArea" readOnly className="btext" value={sheet.text}
+                onFocus={e=>{e.target.select();e.target.setSelectionRange(0,99999)}}/>
+              <div className="mact">
+                <button className="btn gh" onClick={()=>setSheet(null)}>Close</button>
+                <button className="btn bp" onClick={copyBackupText}>Copy all</button>
+              </div>
+            </div>}
+          {sheet&&sheet.kind==='prestore'&&
+            <div>
+              <div className="sht">Restore from text</div>
+              <div className="shs">Paste the backup text you saved earlier.</div>
+              <textarea id="ptextArea" className="btext" placeholder='{"app":"lakshya", ... }'/>
+              <div className="mact">
+                <button className="btn gh" onClick={()=>setSheet(null)}>Cancel</button>
+                <button className="btn bp" onClick={doPasteRestore}>Continue</button>
+              </div>
+            </div>}
+          {sheet&&sheet.kind==='restore'&&
+            <div>
+              <div className="sht">Restore backup?</div>
+              <div className="shs">{sheet.info}</div>
+              <p className="note" style={{marginTop:14}}>This replaces everything on this device with the backup's data.</p>
+              <div className="mact">
+                <button className="btn gh" onClick={()=>setSheet(null)}>Cancel</button>
+                <button className="btn bp" onClick={()=>doRestore(sheet.data)}>Restore</button>
+              </div>
+            </div>}
+        </div>
+      </div>
+
+      <input type="file" ref={impRef} accept=".json,application/json" hidden onChange={onImportFile}/>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
