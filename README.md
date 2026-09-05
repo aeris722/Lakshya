@@ -1,5 +1,4 @@
 
-````markdown
 # 🎯 Lakshya
 
 *A daily discipline system: complete tasks → earn XP → survive penalties → climb the weekly league → protect the streak.*
